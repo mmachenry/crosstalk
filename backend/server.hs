@@ -1,15 +1,12 @@
+#!/usr/bin/env stack
+-- stack --resolver lts-12.5 runghc --package websockets server.hs 
+
 module Main where
 
-import Data.Char (isPunctuation, isSpace)
-import Data.Monoid (mappend)
-import Data.Text (Text)
-import Control.Exception (finally)
-import Control.Monad (forM_, forever)
+import Control.Monad (forever)
 import Control.Concurrent (threadDelay)
 import qualified Data.Text as T
-import qualified Data.Text.IO as T
 import Data.Time.LocalTime (ZonedTime(..), getZonedTime)
-
 import qualified Network.WebSockets as WS
 
 main :: IO ()
