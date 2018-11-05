@@ -20,17 +20,20 @@ viewNew model =
     div [class "crossword-board"] (
       squaresToHtml model.crossword.squares
       ++ [
-      div [class "crossword-board crossword-board--labels"] [
-      ],
-      dl [class "crossword-clues__list crossword-clues__list--across"]
-        ((dt [class "crossword-clues__list-title"] [ text "Across" ])
-        :: acrossClues)
-      ,
-      dl [class "crossword-clues__list crossword-clues__list--down"]
-        ((dt [class "crossword-clues__list-title"] [ text "Down" ])
-        :: downClues)
-      
+      div [class "crossword-board crossword-board--labels"] labels,
+      div [ class "crossword-clues" ] [
+        dl [class "crossword-clues__list crossword-clues__list--across"]
+          ((dt [class "crossword-clues__list-title"] [ text "Across" ])
+          :: acrossClues),
+        dl [class "crossword-clues__list crossword-clues__list--down"]
+          ((dt [class "crossword-clues__list-title"] [ text "Down" ])
+          :: downClues)
+      ]
     ])
+  ]
+
+labels = List.map makeLabel [
+  (1,1,"1")
   ]
 
 acrossClues = List.map clue [
@@ -44,7 +47,7 @@ downClues = List.map clue [
 clue : (String, Int, String) -> Html Msg
 clue (dir, num, phrase) =
   dd [class ("crossword-clues__list-item crossword-clues__list-item--" ++ dir ++ "-" ++ toString num)
-      --, data-number (toString num)
+      , attribute "data-number" (toString num)
       ]
      [ text phrase ]
 
@@ -66,12 +69,12 @@ squareToHtml (row, col) sq =
                 required True,
                 value (String.fromChar c)] []
 
-makeLabel : Int -> Int -> Html Msg
-makeLabel row col =
+makeLabel : (Int, Int, String) -> Html Msg
+makeLabel (row, col, str) =
   span [
-    id "label-1",
-    class "crossword-board__item-label crossword-board__item-label--1"]
-    [span [class "crossword-board__item-label-text"] [ text "1" ]]
+   id ("label-" ++ str),
+   class ("crossword-board__item-label crossword-board__item-label--" ++ str)] [
+    span [class "crossword-board__item-label-text"] [ text str ]]
 
 myHtml = div [ class "crossword-board-container" ]
     [ div [ class "crossword-board" ]
