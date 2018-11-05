@@ -10,7 +10,7 @@ type alias Crossword = {
   squares : Matrix Square
   }
 
-type Square = Blank | Box Char
+type Square = Blank | EmptyBox | Box Char
 
 type Msg = WebSocketMessage String
 

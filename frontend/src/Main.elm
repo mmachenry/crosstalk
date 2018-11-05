@@ -67,6 +67,7 @@ parseCrossword str =
 charToSquare : Char -> Square
 charToSquare c = case c of
   '_' -> Blank
+  ' ' -> EmptyBox
   _ -> Box c
 
 squareList : List a -> List (List a)
