@@ -27,6 +27,21 @@ subscriptions : Model -> Sub Msg
 subscriptions model = WebSocket.listen "ws://127.0.0.1:9160" WebSocketMessage
 
 testInput =
+  "      __ _ _ " ++
+  " __ _        " ++
+  " _    __ _ _ " ++
+  "      _      " ++
+  " _   _ _     " ++
+  "    _     _ _" ++
+  "_ __     __ _" ++
+  "_ _     _    " ++
+  "     _ _   _ " ++
+  "      _      " ++
+  " _ _ __    _ " ++
+  "        _ __ " ++
+  " _ _ __      "
+
+testInput2 =
   "_GRATEFUL_B__" ++
   "____H_U__HARD" ++
   "R_C_I_L_E_D_E" ++
