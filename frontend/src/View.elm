@@ -19,38 +19,28 @@ viewNew model =
     div [class "crossword-board"] (
       squaresToHtml model.crossword.squares
       ++ [
-      div [class "crossword-board crossword-board--labels"] labels,
+      div [class "crossword-board",
+           style [("position", "absolute"),
+                  ("z-index", "60")]]
+        (List.map makeLabel model.crossword.labels),
       div [ class "crossword-clues" ] [
-        dl [class "crossword-clues__list crossword-clues__list--across"]
-          ((dt [class "crossword-clues__list-title"] [ text "Across" ])
-          :: acrossClues),
-        dl [class "crossword-clues__list crossword-clues__list--down"]
-          ((dt [class "crossword-clues__list-title"] [ text "Down" ])
-          :: downClues)
+        dl [class "crossword-clues__list"]
+          (clueTitle "Across"
+          :: (List.map clue model.crossword.acrossClues)),
+        dl [class "crossword-clues__list"]
+          (clueTitle "Down"
+          :: (List.map clue model.crossword.downClues))
       ]
     ])
   ]
 
-labels = List.map makeLabel [
-  (1,1,"1"),
-  (1,4,"2"),
-  (1,6,"3")
-  ]
+clueTitle title =
+  dt [style [("font-weight", "bold"), ("padding", "4px")]] [text title]
 
-acrossClues = List.map clue [
-  ("across", 1, "Cover (6)")
-  ]
-
-downClues = List.map clue [
-  ("down", 1, "Slim (6)")
-  ]
-
-clue : (String, Int, String) -> Html Msg
-clue (dir, num, phrase) =
-  dd [class ("crossword-clues__list-item crossword-clues__list-item--" ++ dir ++ "-" ++ toString num)
-      , attribute "data-number" (toString num)
-      ]
-     [ text phrase ]
+clue : (Int, String) -> Html Msg
+clue (num, phrase) =
+  dd [style [("margin", "0"), ("padding", "4px")]]
+     [ text ((toString num) ++ ". " ++ phrase) ]
 
 squaresToHtml : Matrix Square -> List (Html Msg)
 squaresToHtml board =
@@ -58,7 +48,9 @@ squaresToHtml board =
 
 squareToHtml : Matrix.Location -> Square -> Html Msg
 squareToHtml (row, col) sq = case sq of
-  Blank -> span [class "crossword-board__item--blank"] []
+  Blank -> span [style [("background", "#000000"),
+                        ("border", "1px solid #000000"),
+                        ("outline", "1px solid #000000")]] []
   EmptyBox -> makeInput ""
   Box c -> makeInput (String.fromChar c)
 
@@ -71,12 +63,17 @@ makeInput val =
          required True,
          value val] []
 
-makeLabel : (Int, Int, String) -> Html Msg
-makeLabel (row, col, str) =
-  span [
-   class "crossword-board__item-label",
-   style [("grid-column", toString col), ("grid-row", toString row)]
-  ] [ span [class "crossword-board__item-label-text"] [ text str ]]
+makeLabel : (Int, (Int, Int)) -> Html Msg
+makeLabel (num, (row, col)) =
+  span [style [("position", "relative"),
+               ("grid-column", toString col),
+               ("grid-row", toString row)]] [
+   span [style [("position", "absolute"),
+                ("top", "2px"),
+                ("left", "2px"),
+                ("font-size", "14px"),
+                ("line-height", "1")]]
+     [ text (toString num) ]]
 
 myCss = """
 .crossword-board-container {
@@ -108,33 +105,11 @@ myCss = """
   font-weight: bold;
   text-transform: uppercase;
 }
+
 .crossword-board__item:active, .crossword-board__item:focus {
   background: #FFFF74;
   border: 1px solid #000000;
   outline: 1px solid #000000;
-}
-
-.crossword-board__item--blank {
-  background: #000000;
-  border: 1px solid #000000;
-  outline: 1px solid #000000;
-}
-
-.crossword-board--labels {
-  position: absolute;
-  z-index: 60;
-}
-
-.crossword-board__item-label {
-  position: relative;
-}
-
-.crossword-board__item-label-text {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  font-size: 14px;
-  line-height: 1;
 }
 
 .crossword-clues {
@@ -149,18 +124,5 @@ myCss = """
   padding: 0;
   display: inline-block;
   vertical-align: top;
-}
-
-.crossword-clues__list-title {
-  font-weight: bold;
-  padding: 4px;
-}
-
-.crossword-clues__list-item {
-  margin: 0;
-  padding: 4px;
-}
-.crossword-clues__list-item:before {
-  content: attr(data-number) ". ";
 }
 """
