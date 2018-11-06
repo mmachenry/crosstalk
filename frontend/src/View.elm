@@ -14,7 +14,7 @@ view model = div [] [
 
 viewNew : Model -> Html Msg
 viewNew model =
-  div [class "crossword-board-container"] [
+  div [style [("position", "relative"), ("background", "#FFFFFF")]] [
     node "style" [type_ "text/css"] [ text myCss ],
     div [class "crossword-board"] (
       squaresToHtml model.crossword.squares
@@ -23,21 +23,29 @@ viewNew model =
            style [("position", "absolute"),
                   ("z-index", "60")]]
         (List.map makeLabel model.crossword.labels),
-      div [ class "crossword-clues" ] [
-        dl [class "crossword-clues__list"]
-          (clueTitle "Across"
-          :: (List.map clue model.crossword.acrossClues)),
-        dl [class "crossword-clues__list"]
-          (clueTitle "Down"
-          :: (List.map clue model.crossword.downClues))
+      div [style [("position", "absolute"),
+                  ("top", "0"),
+                  ("left", "650px"),
+                  ("width", "650px")]] [
+        clueList "Across" model.crossword.acrossClues,
+        clueList "Down" model.crossword.downClues
       ]
     ])
   ]
 
+clueList : String -> List Clue -> Html Msg
+clueList title clues =
+  dl [style [("margin", "0 0 0 60px"),
+             ("padding", "0"),
+             ("display", "inline-block"),
+             ("vertical-align", "top")]]
+     (clueTitle title :: (List.map clue clues))
+
+clueTitle : String -> Html Msg
 clueTitle title =
   dt [style [("font-weight", "bold"), ("padding", "4px")]] [text title]
 
-clue : (Int, String) -> Html Msg
+clue : Clue -> Html Msg
 clue (num, phrase) =
   dd [style [("margin", "0"), ("padding", "4px")]]
      [ text ((toString num) ++ ". " ++ phrase) ]
@@ -76,11 +84,6 @@ makeLabel (num, (row, col)) =
      [ text (toString num) ]]
 
 myCss = """
-.crossword-board-container {
-  position: relative;
-  background: #FFFFFF;
-}
-
 .crossword-board {
   position: absolute;
   z-index: 1;
@@ -112,17 +115,4 @@ myCss = """
   outline: 1px solid #000000;
 }
 
-.crossword-clues {
-  position: absolute;
-  top: 0;
-  left: 650px;
-  width: 650px;
-}
-
-.crossword-clues__list {
-  margin: 0 0 0 60px;
-  padding: 0;
-  display: inline-block;
-  vertical-align: top;
-}
 """

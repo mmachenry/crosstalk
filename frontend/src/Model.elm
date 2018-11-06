@@ -10,11 +10,13 @@ type alias Model = {
 type alias Crossword = {
   squares : Matrix Square,
   labels : List (Int, (Int, Int)),
-  acrossClues : List (Int, String),
-  downClues : List (Int, String)
+  acrossClues : List Clue,
+  downClues : List Clue
   }
 
 type Square = Blank | EmptyBox | Box Char
+
+type alias Clue = (Int, String)
 
 type Msg = WebSocketMessage String
 
