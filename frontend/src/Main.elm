@@ -17,7 +17,7 @@ main =
     }
 
 init : (Model, Cmd Msg)
-init = ({crossword = ExampleData.puzzle1}, Cmd.none)
+init = ({crossword = ExampleData.geoCachePuzzle}, Cmd.none)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update message model = case message of

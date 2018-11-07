@@ -15,14 +15,14 @@ view model = div [] [
 viewNew : Model -> Html Msg
 viewNew model =
   div [style [("position", "relative"), ("background", "#FFFFFF")]] [
-    node "style" [type_ "text/css"] [ text myCss ],
-    div [class "crossword-board"] (
+    div [style crosswordBoard] (
       squaresToHtml model.crossword.squares
       ++ [
-      div [class "crossword-board",
+      div [style crosswordBoard,
            style [("position", "absolute"),
                   ("z-index", "60")]]
         (List.map makeLabel model.crossword.labels),
+
       div [style [("position", "absolute"),
                   ("top", "0"),
                   ("left", "650px"),
@@ -83,21 +83,21 @@ makeLabel (num, (row, col)) =
                 ("line-height", "1")]]
      [ text (toString num) ]]
 
-myCss = """
-.crossword-board {
-  position: absolute;
-  z-index: 1;
-  background: transparent;
-  border: 1px solid #000000;
-  width: 650px;
-  height: 650px;
-  display: grid;
-  grid-template: repeat(13, 7.6923076923%)/repeat(13, 7.6923076923%);
-  list-style-type: none;
-  padding: 0;
-  margin: 0 auto;
-}
+crosswordBoard = [
+  ("position", "absolute"),
+  ("z-index", "1"),
+  ("background", "transparent"),
+  ("border", "1px solid #000000"),
+  ("width", "650px"),
+  ("height", "650px"),
+  ("display", "grid"),
+  ("grid-template", "repeat(13, 7.6923076923%)/repeat(13, 7.6923076923%)"),
+  ("list-style-type", "none"),
+  ("padding", "0"),
+  ("margin", "0 auto")
+  ]
 
+myCss = """
 .crossword-board__item {
   border: 1px solid #000000;
   background: transparent;
