@@ -6,6 +6,8 @@ import Html.Attributes exposing (..)
 import List
 import Matrix exposing (Matrix)
 
+boxSize = 50
+
 view : Model -> Html Msg
 view model = div [] [
   node "style" [type_ "text/css"] [ text myCss ],
@@ -14,24 +16,25 @@ view model = div [] [
 
 viewNew : Model -> Html Msg
 viewNew model =
-  div [style [("position", "relative"), ("background", "#FFFFFF")]] [
-    div [style crosswordBoard] (
-      squaresToHtml model.crossword.squares
-      ++ [
-      div [style crosswordBoard,
-           style [("position", "absolute"),
-                  ("z-index", "60")]]
-        (List.map makeLabel model.crossword.labels),
-
-      div [style [("position", "absolute"),
-                  ("top", "0"),
-                  ("left", "650px"),
-                  ("width", "650px")]] [
-        clueList "Across" model.crossword.acrossClues,
-        clueList "Down" model.crossword.downClues
-      ]
-    ])
-  ]
+  let rows = Matrix.rowCount model.crossword.squares
+      cols = Matrix.rowCount model.crossword.squares
+  in div [style [("position", "relative"), ("background", "#FFFFFF")]] [
+       div [style (crosswordBoard (rows, cols))] (
+         squaresToHtml model.crossword.squares
+         ++ [
+         div [style (crosswordBoard (rows, cols)),
+              style [("position", "absolute"),
+                     ("z-index", "60")]]
+           (List.map makeLabel (getLabels model.crossword)),
+         div [style [("position", "absolute"),
+                     ("top", "0"),
+                     ("left", (toString (rows * boxSize)) ++ "px"),
+                     ("width", (toString (cols * boxSize)) ++ "px")]] [
+           clueList "Across" model.crossword.acrossClues,
+           clueList "Down" model.crossword.downClues
+         ]
+       ])
+     ]
 
 clueList : String -> List Clue -> Html Msg
 clueList title clues =
@@ -48,7 +51,7 @@ clueTitle title =
 clue : Clue -> Html Msg
 clue (num, phrase) =
   dd [style [("margin", "0"), ("padding", "4px")]]
-     [ text ((toString num) ++ ". " ++ phrase) ]
+     [text ((toString num) ++ ". " ++ phrase)]
 
 squaresToHtml : Matrix Square -> List (Html Msg)
 squaresToHtml board =
@@ -83,15 +86,18 @@ makeLabel (num, (row, col)) =
                 ("line-height", "1")]]
      [ text (toString num) ]]
 
-crosswordBoard = [
+crosswordBoard (rows, cols) = [
   ("position", "absolute"),
   ("z-index", "1"),
   ("background", "transparent"),
   ("border", "1px solid #000000"),
-  ("width", "650px"),
-  ("height", "650px"),
+  ("width", toString (boxSize * rows) ++ "px"),
+  ("height", toString (boxSize * cols) ++ "px"),
   ("display", "grid"),
-  ("grid-template", "repeat(13, 7.6923076923%)/repeat(13, 7.6923076923%)"),
+  ("grid-template",
+    "repeat(" ++ toString rows ++ ", " ++ toString (100/toFloat rows)
+    ++ "%)/repeat(" ++ toString cols ++ ", " ++
+    toString (100/toFloat cols) ++ "%)"),
   ("list-style-type", "none"),
   ("padding", "0"),
   ("margin", "0 auto")

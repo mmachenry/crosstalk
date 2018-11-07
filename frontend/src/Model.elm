@@ -11,7 +11,6 @@ type alias Model = {
 
 type alias Crossword = {
   squares : Matrix Square,
-  labels : List Label,
   acrossClues : List Clue,
   downClues : List Clue
   }
@@ -54,7 +53,7 @@ makeLabel : Squares -> Matrix.Location -> Square -> Maybe Matrix.Location
 makeLabel squares location square = case square of
   Blank -> Nothing
   _ -> if startsAcross squares location || startsDown squares location
-       then Just location
+       then Just (Matrix.row location + 1, Matrix.col location + 1)
        else Nothing
 
 startsAcross : Squares -> Matrix.Location -> Bool
